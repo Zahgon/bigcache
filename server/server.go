@@ -13,15 +13,13 @@ import (
 )
 
 const (
-	// base HTTP paths.
 	apiVersion  = "v1"
 	apiBasePath = "/api/" + apiVersion + "/"
 
-	// path to cache.
 	cachePath      = apiBasePath + "cache/"
 	statsPath      = apiBasePath + "stats"
 	cacheClearPath = apiBasePath + "cache/clear"
-	// server version.
+
 	version = "1.0.0"
 )
 
@@ -30,7 +28,6 @@ var (
 	logfile string
 	ver     bool
 
-	// cache-specific settings.
 	cache  *bigcache.BigCache
 	config = bigcache.Config{}
 )
@@ -75,7 +72,6 @@ func main() {
 
 	logger.Print("cache initialised.")
 
-	// let the middleware log.
 	http.Handle(cacheClearPath, serviceLoader(cacheClearHandler(), requestMetrics(logger)))
 	http.Handle(cachePath, serviceLoader(cacheIndexHandler(), requestMetrics(logger)))
 	http.Handle(statsPath, serviceLoader(statsIndexHandler(), requestMetrics(logger)))

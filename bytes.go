@@ -3,10 +3,4 @@
 
 package bigcache
 
-import (
-	"unsafe"
-)
-
-func bytesToString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
-}
+func bytesToString(b []byte) string { _ = "STUB: not implemented"; return "" }

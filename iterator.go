@@ -6,19 +6,14 @@ import (
 
 type iteratorError string
 
-func (e iteratorError) Error() string {
-	return string(e)
-}
+func (e iteratorError) Error() string { _ = "STUB: not implemented"; return "" }
 
-// ErrInvalidIteratorState is reported when iterator is in invalid state
 const ErrInvalidIteratorState = iteratorError("Iterator is in invalid state. Use SetNext() to move to next position")
 
-// ErrCannotRetrieveEntry is reported when entry cannot be retrieved from underlying
 const ErrCannotRetrieveEntry = iteratorError("Could not retrieve entry from cache")
 
 var emptyEntryInfo = EntryInfo{}
 
-// EntryInfo holds informations about entry in the cache
 type EntryInfo struct {
 	timestamp uint64
 	hash      uint64
@@ -27,27 +22,14 @@ type EntryInfo struct {
 	err       error
 }
 
-// Key returns entry's underlying key
-func (e EntryInfo) Key() string {
-	return e.key
-}
+func (e EntryInfo) Key() string { _ = "STUB: not implemented"; return "" }
 
-// Hash returns entry's hash value
-func (e EntryInfo) Hash() uint64 {
-	return e.hash
-}
+func (e EntryInfo) Hash() uint64 { _ = "STUB: not implemented"; return 0 }
 
-// Timestamp returns entry's timestamp (time of insertion)
-func (e EntryInfo) Timestamp() uint64 {
-	return e.timestamp
-}
+func (e EntryInfo) Timestamp() uint64 { _ = "STUB: not implemented"; return 0 }
 
-// Value returns entry's underlying value
-func (e EntryInfo) Value() []byte {
-	return e.value
-}
+func (e EntryInfo) Value() []byte { _ = "STUB: not implemented"; return nil }
 
-// EntryInfoIterator allows to iterate over entries in the cache
 type EntryInfoIterator struct {
 	mutex            sync.Mutex
 	cache            *BigCache
@@ -59,88 +41,13 @@ type EntryInfoIterator struct {
 	valid            bool
 }
 
-// SetNext moves to next element and returns true if it exists.
-func (it *EntryInfoIterator) SetNext() bool {
-	it.mutex.Lock()
+func (it *EntryInfoIterator) SetNext() bool { _ = "STUB: not implemented"; return false }
 
-	it.valid = false
-	it.currentIndex++
+func (it *EntryInfoIterator) setCurrentEntry() bool { _ = "STUB: not implemented"; return false }
 
-	if it.elementsCount > it.currentIndex {
-		it.valid = true
+func newIterator(cache *BigCache) *EntryInfoIterator { _ = "STUB: not implemented"; return nil }
 
-		empty := it.setCurrentEntry()
-		it.mutex.Unlock()
-
-		if empty {
-			return it.SetNext()
-		}
-		return true
-	}
-
-	for i := it.currentShard + 1; i < it.cache.config.Shards; i++ {
-		it.elements, it.elementsCount = it.cache.shards[i].copyHashedKeys()
-
-		// Non empty shard - stick with it
-		if it.elementsCount > 0 {
-			it.currentIndex = 0
-			it.currentShard = i
-			it.valid = true
-
-			empty := it.setCurrentEntry()
-			it.mutex.Unlock()
-
-			if empty {
-				return it.SetNext()
-			}
-			return true
-		}
-	}
-	it.mutex.Unlock()
-	return false
-}
-
-func (it *EntryInfoIterator) setCurrentEntry() bool {
-	var entryNotFound = false
-	entry, err := it.cache.shards[it.currentShard].getEntry(it.elements[it.currentIndex])
-
-	if err == ErrEntryNotFound {
-		it.currentEntryInfo = emptyEntryInfo
-		entryNotFound = true
-	} else if err != nil {
-		it.currentEntryInfo = EntryInfo{
-			err: err,
-		}
-	} else {
-		it.currentEntryInfo = EntryInfo{
-			timestamp: readTimestampFromEntry(entry),
-			hash:      readHashFromEntry(entry),
-			key:       readKeyFromEntry(entry),
-			value:     readEntry(entry),
-			err:       err,
-		}
-	}
-
-	return entryNotFound
-}
-
-func newIterator(cache *BigCache) *EntryInfoIterator {
-	elements, count := cache.shards[0].copyHashedKeys()
-
-	return &EntryInfoIterator{
-		cache:         cache,
-		currentShard:  0,
-		currentIndex:  -1,
-		elements:      elements,
-		elementsCount: count,
-	}
-}
-
-// Value returns current value from the iterator
 func (it *EntryInfoIterator) Value() (EntryInfo, error) {
-	if !it.valid {
-		return emptyEntryInfo, ErrInvalidIteratorState
-	}
-
-	return it.currentEntryInfo, it.currentEntryInfo.err
+	_ = "STUB: not implemented"
+	return *new(EntryInfo), nil
 }
